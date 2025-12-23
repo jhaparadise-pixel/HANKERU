@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>多链地址器 — 本地生成 BTC / ETH / TRON（含 USDT 地址）</title>
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- 依赖库（可替换为本地离线文件） -->
+  <script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/browser/bip39.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bip32@5.2.0/dist/bip32.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bitcoinjs-lib@6.1.0/dist/bitcoinjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>多链地址器 — 本地生成（BTC / ETH / TRON / USDT）</h1>
+      <p class="muted">全部在浏览器生成，私钥/助记词不会上传。务必在离线/隔离环境使用。</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="controls">
+      <div class="control-row">
+        <label>
+          生成方式：
+          <select id="mode">
+            <option value="mnemonic">BIP39 助记词（推荐）</option>
+            <option value="raw">直接生成私钥（随机）</option>
+          </select>
+        </label>
+
+        <label id="mnemonicStrengthLabel">助记词长度：
+          <select id="strength">
+            <option value="128">12 字</option>
+            <option value="160">15 字</option>
+            <option value="192">18 字</option>
+            <option value="224">21 字</option>
+            <option value="256" selected>24 字</option>
+          </select>
+        </label>
+
+        <label>
+          派生账户索引：
+          <input id="accountIndex" type="number" min="0" value="0" />
+        </label>
+
+        <button id="generateBtn" class="primary">生成地址</button>
+      </div>
+
+      <div class="control-row">
+        <label>
+          隐私选项：
+          <input type="checkbox" id="showPrivateToggle" /> 点击后会显示私钥/助记词（危险）
+        </label>
+
+        <label>
+          显示 USDT：
+          <select id="usdtNetwork">
+            <option value="tron">TRC-20 (TRON)</option>
+            <option value="eth">ERC-20 (Ethereum)</option>
+          </select>
+        </label>
+
+        <button id="exportBtn">导出（JSON）</button>
+        <button id="downloadQRBtn">导出全部二维码（ZIP）</button>
+        <label class="switch">
+          暗色模式
+          <input type="checkbox" id="darkModeToggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="alert" id="warningBox">
+        <strong>安全提醒：</strong> 私钥/助记词生成并显示在本地。请在离线环境打开此页面并确保浏览器无可疑扩展。导出或显示私钥前需确认你理解风险。
+      </div>
+    </section>
+
+    <!-- 结果卡片 -->
+    <section id="cards" class="cards">
+      <!-- 动态插入 BTC / ETH / TRON 卡片 -->
+    </section>
+
+    <section class="notes">
+      <h3>说明与建议</h3>
+      <ul>
+        <li>TRON 地址由相同的 SECP256k1 私钥派生（与以太私钥兼容），本页自动完成转换。</li>
+        <li>USDT：选择 TRC-20（TRON）或 ERC-20（ETH）。USDT 本身为代币，使用相应链的地址即可接收。</li>
+        <li>若用于生产大额资金，请使用硬件钱包或受信任的离线工具。</li>
+        <li>离线使用方法：把 index.html、styles.css、app.js 以及上方列出的库文件下载到同目录，替换 CDN 引用为本地引用，然后在隔离电脑上打开。</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <small>生成时间（本地）：<span id="generatedAt">-</span></small>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
